@@ -392,7 +392,7 @@ export const dummyProducts = [
     name: "Paneer 200g",
     category: "Dairy",
     price: 90,
-    offerPrice: 85,
+    offerPrice: 84,
     image: [paneer_image],
     description: [
       "Soft and fresh",

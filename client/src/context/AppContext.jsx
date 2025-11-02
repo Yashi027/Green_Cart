@@ -14,6 +14,7 @@ export const AppContextProvider = ({ children }) => {
   const [isSeller, setIsSeller] = useState(false);
   const [showUserLogin, setShowUserLogin] = useState(false)
   const [product, setProduct] = useState([])
+  const [searchQuery, setsearchQuery] = useState([])
 
   const [cartItems , setCartItems] = useState({})
 
@@ -68,7 +69,9 @@ export const AppContextProvider = ({ children }) => {
     addToCart,
     updateCartItem,
     removeFromCart,
-    cartItems
+    cartItems,
+    searchQuery,
+    setsearchQuery
   };
 
   return (
