@@ -34,9 +34,23 @@ export const productList = async (req,res) => {
 }
 
 export const productById = async (req,res) => {
-    
+    try {
+        const {id} = req.body;
+        const product = await Product.findById(id)
+        res.status(200).json({success: true, product})
+    } catch (error) {
+        console.log(error.message)
+        return res.status(500).json({success:false,message: error.message})
+    }
 }
 
 export const changeStock = async (req,res) => {
-    
+    try {
+        const {id, inStock} = req.body;
+        await Product.findByIdAndUpdate(id,{inStock})
+        res.status(200).json({success: true, message:"Stock updated"})
+    } catch (error) {
+        console.log(error.message)
+        return res.status(500).json({success:false,message: error.message})
+    }
 }
