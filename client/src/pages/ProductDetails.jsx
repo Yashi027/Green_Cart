@@ -33,7 +33,7 @@ const ProductDetails = () => {
       <p>
         <Link to="/">Home</Link> /
         <Link to="/products"> Products</Link> /
-        <Link to={`/products/${prod?.category?.toLowerCase()}`}> {prod?.category}</Link> /
+        <Link to={`/products/${prod?.category?.[0]?.toLowerCase()}`}> {prod?.category.join(",")}</Link> /
         <span className="text-primary"> {prod.name}</span>
       </p>
 
