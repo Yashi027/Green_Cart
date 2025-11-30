@@ -1,9 +1,10 @@
 import React from 'react';
 import { useAppContext } from '../context/AppContext';
+import toast from 'react-hot-toast';
 
 const Login = () => {
-     const [state, setState] = React.useState("login")
-     const {setShowUserLogin, setUser} = useAppContext()
+    const [state, setState] = React.useState("login")
+    const { setShowUserLogin, setUser, axios, navigate } = useAppContext()
 
     const [formData, setFormData] = React.useState({
         name: '',
@@ -13,20 +14,36 @@ const Login = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setUser({
-            email: "test@gmail.com",
-            name: "test"
-        })
-        setShowUserLogin(false)
-    }
+
+        try {
+            const { name, email, password } = formData;
+            const payload = state === "login" ? { email, password } : { name, email, password };
+
+            const { data } = await axios.post(`/api/user/${state}`, payload);
+
+            if (data.success) {
+                setUser(data.user);
+                setShowUserLogin(false);
+                navigate('/');
+                toast.success(`Welcome ${data.user.email}`);
+            } else {
+                toast.error(data.message);
+            }
+        } catch (error) {
+            console.log(error.response?.data || error.message);
+            toast.error(error.response?.data?.message || error.message);
+        }
+    };
+
+
 
     const handleChange = (e) => {
         const { name, value } = e.target
         setFormData(prev => ({ ...prev, [name]: value }))
     }
-  return (
-    <div onClick={() => setShowUserLogin(false)} className='fixed top-0 right-0 left-0 bottom-0 z-30 flex items-center justify-center text-sm text-gray-600 bg-black/50'>
-      <form onClick={(e) => e.stopPropagation()} onSubmit={handleSubmit} className="sm:w-[350px] w-full text-center border border-gray-300/60 rounded-2xl px-8 bg-white">
+    return (
+        <div onClick={() => setShowUserLogin(false)} className='fixed top-0 right-0 left-0 bottom-0 z-30 flex items-center justify-center text-sm text-gray-600 bg-black/50'>
+            <form onClick={(e) => e.stopPropagation()} onSubmit={handleSubmit} className="sm:w-[350px] w-full text-center border border-gray-300/60 rounded-2xl px-8 bg-white">
                 <h1 className="text-gray-900 text-3xl mt-10 font-medium">{state === "login" ? "Login" : "Sign up"}</h1>
                 <p className="text-gray-500 text-sm mt-2">Please sign in to continue</p>
                 {state !== "login" && (
@@ -51,8 +68,8 @@ const Login = () => {
                 </button>
                 <p onClick={() => setState(prev => prev === "login" ? "register" : "login")} className="text-gray-500 text-sm mt-3 mb-11">{state === "login" ? "Don't have an account?" : "Already have an account?"} <a href="#" className="text-primary hover:underline">click here</a></p>
             </form>
-    </div>
-  );
+        </div>
+    );
 }
 
 export default Login;

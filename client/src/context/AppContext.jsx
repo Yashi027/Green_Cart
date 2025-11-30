@@ -1,6 +1,5 @@
 import { useContext, useState, createContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { dummyProducts } from "../assets/assets.js";
 import toast from "react-hot-toast";
 import axios from 'axios';
 
@@ -20,7 +19,12 @@ export const AppContextProvider = ({ children }) => {
   const [product, setProduct] = useState([])
   const [searchQuery, setsearchQuery] = useState([])
 
-  const [cartItems , setCartItems] = useState({})
+  //const [cartItems , setCartItems] = useState({})
+
+   const [cartItems, setCartItems] = useState(() => {
+    const savedCart = localStorage.getItem("cart");
+    return savedCart ? JSON.parse(savedCart) : {};
+  });
 
   const fetchProducts = async() => {
      try {
@@ -46,6 +50,21 @@ export const AppContextProvider = ({ children }) => {
     } catch (error) {
       setIsSeller(false)
       console.log(error)
+    }
+  }
+
+  const fetchUser = async () => {
+    try {
+      const {data} = await axios.get('/api/user/is-auth');
+      if(data.success){
+        setUser(data.user)
+        // Merge server cart with localStorage cart
+        const savedCart = JSON.parse(localStorage.getItem("cart")) || {};
+        const mergedCart = { ...data.user.cartItems, ...savedCart };
+        setCartItems(mergedCart);
+      }
+    } catch (error) {
+      setUser(null)
     }
   }
 
@@ -98,10 +117,33 @@ export const AppContextProvider = ({ children }) => {
     return totalAmount;
   }
 
+   useEffect(() => {
+    localStorage.setItem("cart", JSON.stringify(cartItems));
+  }, [cartItems]);
+
   useEffect(() => {
+    fetchUser()
     fetchSeller()
     fetchProducts()
   },[])
+
+
+  useEffect(() => {
+    const updateCart = async () => {
+      try {
+        const {data} = await axios.post('/api/cart/update',{cartItems,userId: user?._id})
+        
+        if(!data.success){
+          toast.error(data.message)
+        }
+      } catch (error) {
+        toast.error(error.message)
+      }
+    }
+    if(user){
+      updateCart();
+    }
+  },[cartItems,user])
 
   const value = {
     user,
