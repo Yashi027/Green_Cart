@@ -10,6 +10,7 @@ import productrouter from './routes/productRoute.js';
 import cartrouter from './routes/cartRoute.js';
 import addressrouter from './routes/addressRoute.js';
 import orderrouter from './routes/orderRoute.js';
+import { stripeWebhooks } from './controllers/OrderController.js';
 
 const app=express();
 const port = process.env.PORT || 4000;
@@ -18,6 +19,8 @@ await connectDb()
 await connectcloudinary()
 
 const allowedOrigins=['http://localhost:5173']
+
+app.post('/stripe',express.raw({type:'application/json'}),stripeWebhooks)
 
 app.use(express.json());
 app.use(cors({origin: allowedOrigins, credentials:true}));
