@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { useAppContext } from '../context/AppContext'
-import { dummyOrders } from '../assets/assets'
 
 const MyOrders = () => {
     const [myorders, setMyOrders] = useState([])
