@@ -108,39 +108,37 @@ export const stripeWebhooks = async (req, res) => {
       sig,
       process.env.STRIPE_WEBHOOK_SECRET
     );
+    console.log("✅ Webhook received:", event.type);
   } catch (err) {
+    console.log("❌ Webhook signature verification failed:", err.message);
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 
   try {
     switch (event.type) {
-      case "checkout.session.completed": {
+      case "checkout.session.completed":
         const session = event.data.object;
         const { orderId, userId } = session.metadata || {};
+        console.log("Processing orderId:", orderId);
 
-        if (!orderId || !userId) break;
-
-        await Order.findByIdAndUpdate(orderId, {
-          isPaid: true,
-          paymentType: "Online",
-        });
-
-        await User.findByIdAndUpdate(userId, {
-          cartItems: {},
-        });
-
-        console.log("✅ Order marked PAID:", orderId);
-        break;
-      }
-
-      case "payment_intent.payment_failed": {
-        const intent = event.data.object;
-        const { orderId } = intent.metadata || {};
-        if (orderId) {
-          await Order.findByIdAndDelete(orderId);
+        if (orderId && userId) {
+          await Order.findByIdAndUpdate(orderId, {
+            isPaid: true,
+            paymentType: "Online",
+          });
+          await User.findByIdAndUpdate(userId, { cartItems: {} });
+          console.log("✅ Order marked PAID:", orderId);
         }
         break;
-      }
+
+      case "payment_intent.payment_failed":
+        const intent = event.data.object;
+        const failedOrderId = intent.metadata?.orderId;
+        if (failedOrderId) {
+          await Order.findByIdAndDelete(failedOrderId);
+          console.log("❌ Order deleted due to payment failure:", failedOrderId);
+        }
+        break;
 
       default:
         console.log(`Unhandled event: ${event.type}`);
@@ -152,6 +150,7 @@ export const stripeWebhooks = async (req, res) => {
     res.status(500).send("Webhook handler failed");
   }
 };
+
 
 
 export const getUserOrders = async (req, res) => {
