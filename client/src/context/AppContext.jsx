@@ -32,10 +32,10 @@ export const AppContextProvider = ({ children }) => {
       if(data.success){
         setProduct(data.products)
       }else{
-        toast.error(data.message)
+        console.log(data.message)
       }
      } catch (error) {
-      toast.error(error.message)
+      console.log(error.message)
      }
   }
 
@@ -134,10 +134,10 @@ export const AppContextProvider = ({ children }) => {
         const {data} = await axios.post('/api/cart/update',{cartItems,userId: user?._id})
         
         if(!data.success){
-          toast.error(data.message)
+          console.log(data.message)
         }
       } catch (error) {
-        toast.error(error.message)
+        console.log(error.message)
       }
     }
     if(user){
