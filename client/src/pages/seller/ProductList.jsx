@@ -13,10 +13,10 @@ const ProductList = () => {
             fetchProducts();
             toast.success(data.message);
         }else{
-            toast.error(data.message)
+            console.log(data.message)
         }
     } catch (error) {
-        toast.error(error.message)
+        console.log(error.message)
     }
   }
   return (

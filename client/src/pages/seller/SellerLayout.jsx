@@ -21,10 +21,10 @@ const SellerLayout = () => {
                 toast.success(data.message)
                 navigate('/')
             }else{
-                toast.error(data.message)
+                console.log(data.message)
             }
         } catch (error) {
-            toast.error(error.message)
+            console.log(error.message)
         }
     }
 

@@ -57,10 +57,10 @@ const AddAddress = () => {
                 toast.success(data.message)
                 navigate('/cart')
             } else {
-                toast.error(data.message)
+                console.log(data.message)
             }
         } catch (error) {
-            toast.error(error.message)
+            console.log(error.message)
         }
     }
 

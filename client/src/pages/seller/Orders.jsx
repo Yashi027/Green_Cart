@@ -14,9 +14,9 @@ const Orders = () => {
             if (data.success)
                 setOrders(data.orders)
             else
-                toast.error(data.message)
+                console.log(data.message)
         } catch (error) {
-            toast.error(error.message)
+            console.log(error.message)
         }
     }
 

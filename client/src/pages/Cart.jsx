@@ -31,10 +31,10 @@ const Cart = () => {
                     setSelectedAddress(data.addresses[0])
                 }
             }else{
-                toast.error(data.message)
+                console.log(data.message)
             }
         } catch (error) {
-            toast.error(error.message)
+            console.log(error.message)
         }
     }
 
@@ -66,7 +66,7 @@ const Cart = () => {
                     setCartItems({})
                     navigate('/my-orders')
                 }else{
-                    toast.error(data.message)
+                    console.log(data.message)
                 }
             }else{
                 const {data} = await axios.post('/api/order/stripe',{
@@ -77,11 +77,11 @@ const Cart = () => {
                 if(data.success){
                     window.location.replace(data.url)
                 }else{
-                    toast.error(data.message)
+                    console.log(data.message)
                 }
             }
         } catch (error) {
-            toast.error(error.message)
+            console.log(error.message)
         }
     }
     return product.length > 0 && cartItems ? (
