@@ -27,11 +27,11 @@ const Login = () => {
                 navigate('/');
                 toast.success(`Welcome ${data.user.email}`);
             } else {
-                toast.error(data.message);
+//                toast.error(data.message);
             }
         } catch (error) {
             console.log(error.response?.data || error.message);
-            toast.error(error.response?.data?.message || error.message);
+//            toast.error(error.response?.data?.message || error.message);
         }
     };
 
